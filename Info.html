@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang='pt-BR'>
+    <head>
+        <meta name='format-detection' content='telephone=no'>
+        <meta charset='UTF-8'>
+        <meta name='viewport' content='width=device-width,initial-scale=1,user-scalable=no'/>
+        <title>ESP-Info</title>
+
+    </head>
+        
+    <style>
+        #botao{ text-align: center }
+        body {margin:0; font-family:'Segoe UI',Roboto,'Helvetica Neue',Arial,'Noto Sans','Liberation Sans'; font-size:1rem; font-weight:400; line-height:1.5; color:#212529; background-color:#f5f5f5}
+        button{cursor: pointer;border:1px solid transparent;color:#fff;background-color:#007bff;border-color:#007bff;padding:.5rem 1rem;font-size:1.25rem;line-height:1.5;border-radius:.3rem;width:30%}
+        .form-signin{width:100%;max-width:400px;padding:15px;margin:auto;}
+        h1{text-align: center;color:blue;font-style: italic;}
+        h3{margin-left: 20px;color:black;font-style: italic;}
+        dl{
+            display: block;
+            margin-top: 1em;
+            margin-bottom: 1em;
+            margin-left: 20px;
+            margin-right: 0px;
+            color: black;
+            }
+    </style>
+        
+        <body>
+            <main class='form-signin'>
+                <h1>Informações Dispositivo</h1><hr>
+                <h3>ESP8266-ee50f0</h3><hr>
+                <dl>
+                    <dt>Tempo atividade</dt><dd>5 Mins 0 Secs</dd>
+                    <dt>Chip ID</dt><dd>15618288</dd>
+                    <dt>Flash Chip ID</dt><dd>1458415</dd>
+                    <dt>Flash Size</dt><dd>4194304 bytes</dd>
+                    <dt>Real Flash Size</dt><dd>4194304 bytes</dd>
+                    <dt>Core Version</dt><dd>3.1.2</dd>
+                    <dt>Boot Version</dt><dd>31</dd>
+                    <dt>CPU Frequency</dt><dd>80MHz</dd>
+                    <dt>Memory - Free Heap</dt><dd>5840 bytes available</dd>
+                    <dt>Memory - Sketch Size</dt><dd>Used / Total bytes<br/>591856 / 2095088<br/><progress value='591856' max='2095088'></progress></dd>
+                    <dt>Motivo último reset</dt><dd>Power On</dd>
+                </dl><hr>
+                
+                <h3>WiFi - Modo: WIFI_STA</h3><hr>
+                <dl>
+                    <dt>Conectado?</dt><dd>Sim</dd>
+                    <dt>Station SSID</dt><dd>BH2</dd>
+                    <dt>Station IP</dt><dd>192.168.0.165</dd>
+                    <dt>Station Gateway</dt><dd>192.168.0.1</dd>
+                    <dt>Station Subnet</dt><dd>255.255.255.0</dd>
+                    <dt>DNS Server</dt><dd>192.168.0.1</dd>
+                    <dt>Hostname</dt><dd>ESP-EE50F0</dd>
+                    <dt>Station MAC</dt><dd>84:F3:EB:EE:50:F0</dd>
+                    <dt>Autoconnect</dt><dd>enable</dd>
+                    <dt>Access Point SSID</dt><dd>Setup Portal - ee50f0</dd>
+                    <dt>Access Point IP</dt><dd>(IP unset)</dd>
+                    <dt>BSSID</dt><dd>E0:1C:FC:01:18:E3</dd>
+                    <dt>Access Point MAC</dt><dd>86:F3:EB:EE:50:F0</dd>
+                </dl><hr>
+                
+                <h3>Sobre</h3><hr>
+                <dl>
+                    <dt>Complilação</dt><dd>Blynk_Bomba_031.ino</dd>
+                    <dt>Por</dt><dd>Léviro</dd>
+                </dl><hr>
+            
+                <br><br/>
+                <form action='/' method='get'>
+                    <div id="botao">
+                        <button>Voltar</button>
+                    </div>
+                </form>
+                <br><br>
+            </main>
+        </body>
+</html>

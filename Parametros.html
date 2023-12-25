@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang='pt-BR'>
+    <head>
+        <meta charset='utf-8'>
+        <meta name='viewport' content='width=device-width, initial-scale=1'>
+        <title>ESP Parâmetros</title>
+
+        <style>
+            *,
+            ::after,
+            ::before {box-sizing:border-box;}
+            .c {text-align: center;}
+            body {margin:0; font-family:'Segoe UI',Roboto,'Helvetica Neue',Arial,'Noto Sans','Liberation Sans'; font-size:1rem; font-weight:400; line-height:1.5; color:#212529; background-color:#f5f5f5;}
+            .form-control{display:block;width:100%;height:calc(1.5em + .75rem + 2px);border:1px solid #ced4da;color: blueviolet;}
+            button{cursor: pointer;border:1px solid transparent;color:#fff;background-color:#007bff;border-color:#007bff;padding:.5rem 1rem;font-size:1.25rem;line-height:1.5;border-radius:.3rem;width:100%}
+            .form-signin{width:100%;max-width:400px;padding:15px;margin:auto;}
+            h1{text-align: center;}
+        </style>
+
+        <script>
+            function c(l) {
+                document.getElementById('url').value='';
+                document.getElementById('port').value='';
+                document.getElementById('user').value='';
+                document.getElementById('pass').value='';
+                document.getElementById('pub').value='';
+                document.getElementById('sub').value='';
+                document.getElementById('host').value='';
+                document.getElementById('alexa01').value='';
+                document.getElementById('url').focus();
+            }
+        </script>
+
+    </head>
+    <body>
+
+        <main class='form-signin'>
+        
+            <h1>Configurar Parâmetros</h1>
+
+
+            <form action='/' method='post'>
+                <div class='form-floating'>
+                    <label>Broker MQTT</label>
+                    <input type='text' class='form-control' id='url' name='url' placeholder='Broker MQTT' value='{url}'>
+                </div>
+                <div class='form-floating'>
+                    <label>Porta Broker</label>
+                    <input type='number' class='form-control' id='port' name='port' placeholder='Porta Broker' value='{port}'>
+                </div>
+                <div class='form-floating'>
+                    <label>Usuário</label>
+                    <input type='text' class='form-control' id='user' name='user' placeholder='Usuário' value='{user}'>
+                </div>
+                <div class='form-floating'>
+                    <label>Senha</label>
+                    <input type='text' class='form-control' id='pass' name='pass' placeholder='Senha' value='{pass}'>
+                </div>
+                <div class='form-floating'>
+                    <label>Tópico PUBLISH</label>
+                    <input type='text' class='form-control' id='pub' name='pub' placeholder='Tópico Publish' value='{pub}'>
+                </div>
+                <div class='form-floating'>
+                    <label>Tópico SUBSCRIBE</label>
+                    <input type='text' class='form-control' id='sub' name='sub' placeholder='Tópico subscribe' value='{sub}'>
+                </div>
+                <div class='form-floating'>
+                    <label>Host mDNS</label>
+                    <input type='text' class='form-control' id='host' name='host' placeholder='Host mDNS' value='{host}'>
+                </div>
+                <div class='form-floating'>
+                    <label>Dispositivo Alexa</label>
+                    <input type='text' class='form-control' id='alexa01' name='alexa01' placeholder='Alexa' value='{alexa01}'>
+                </div>
+
+                <br/>
+                <button type='submit'>Salvar</button><p style='text-align: right'></p>
+                <button type='reset'>Restaurar</button><p style='text-align: right'></p>
+                <button type='button' onclick='c(this)'>Limpar</button><p style='text-align: right'></p>
+
+            </form>
+            <br/>
+
+            <form action='/' method='get'>
+                <button type='botton'>Voltar</button><p style='text-align: right'></p>
+            </form><br/>
+
+        </main>
+    </body>
+</html>

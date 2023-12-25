@@ -102,10 +102,10 @@ String ssidName       = "Setup Portal";     // prefixo nome do Potal Cativo (mod
 const char* ssidSenha = "12345678";         // senha de acesso ao Potal Cativo (modo AP). Mínimo de 8 carecteres e máximo de 64 caracteres
 
 // Variáveis para controles de tempo
-unsigned long previousMillis = 0;
-unsigned long previousMillis2 = 0;
-unsigned long intervalo = 250;
-unsigned long intervalo2 = 100000;
+unsigned long previousMillis = 0;           // Controle de tempo - função StatusRede
+unsigned long intervalo = 250;              // Faz o LED piscar quando desconectado do WiFi (250 ms)
+unsigned long previousMillis2 = 0;          // Contorle de tempo - função checkRede
+unsigned long intervalo2 = 100000;          // Verifica redes disponíveis em modo AP para conexão em modo ST (após reset)
 unsigned long reconecta = 0;                // variavel para a conexão com o servidor MQTT
 unsigned long lastTime2 = 0;                // controle de tempo para atualização dos sensores
 unsigned long timerDelay2 = 1 * 20 * 1000;  // a cada 20 segundos atualiza status dos sensores
@@ -132,7 +132,7 @@ uint32_t sntp_update_delay_MS_rfc_not_less_than_15000 () {
 // Variáveis MQTT - HiveMQ Cloud
 const char*   DISP_ID                = "ESP-02";           // ID Unico do Dispositivo. Caso sejam usados IDs repetidos a ultima conexão irá sobrepor a anterior. Será redefinido este ID quando da conexão com MQTT concatenando caracteres aleatórios.
 char          DISP_USER[32]          = "ESP-02";           // Usuário do Dispositivo. Tem que ser o ID previamente cadastrado no HiveMQ Cloud. 
-char          DISP_PASSWORD[32]      = "Esp8266@02";       // Senha do Dispositivo. Tem que ser o ID previamente cadastrado no HiveMQ Cloud. 
+char          DISP_PASSWORD[32]      = "xxxxxxxxxx";       // Senha do Dispositivo. Tem que ser o ID previamente cadastrado no HiveMQ Cloud. 
 char          TOPIC_PUBLISH[64]      = "Sala/PUMPonoff";   // criacao do topico para publish. Informe um topico unico. Caso sejam usados tópicos em duplicidade, o último irá eliminar o anterior.
 char          TOPIC_SENSOR0[64]      = "Sala/Sensor0";     // criacao do topico para publish: Sensor0 
 char          TOPIC_SENSOR1[64]      = "Sala/Sensor1";     // criacao do topico para publish: Sensor1

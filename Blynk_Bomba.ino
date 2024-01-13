@@ -12,7 +12,7 @@
 #include <ArduinoJson.h>        // biblioteca JSON para C++, por Benoît Blanchon, versão 6.21.3
 #include <ESP8266HTTPClient.h>  // biblioteca http para enviar mensagens para o webhook
 
-
+#include "secrets.h"
 
 // somente para o ESP8266, uso do CallBack. ESP32 não precisa
 #ifdef ESP8266
@@ -55,13 +55,13 @@ HTTPClient sender;              // instancia HTTP Client
 void callbackAlexa_01(uint8_t brilho);
 
 // mDNS server
-char myHostname[32] = "bombsala";         // nome do host para mDNS. Para "esp8266", digitar no browse http://esp8266.local
+char myHostname[32] = SEC_HOSTNAME;         // nome do host para mDNS. Para "esp8266", digitar no browse http://esp8266.local
 
 // Broker MQTT server (selecionar/configurar conforme utilização)
-char BROKER_MQTT[64]      = "14222a21d4914d69b3aadcab0de3ad88.s2.eu.hivemq.cloud";       // URL do servidor broker MQTT da HiveMQ Cloud (privado)
+char BROKER_MQTT[64] = SEC_BROKER;       // URL do servidor broker MQTT da HiveMQ Cloud (privado)
 
 // Definição nome dispositivo Alexa
-String deviceName01 = "Bomba Sala";      // nome do dispositivo 01 da Alexa
+String deviceName01 = SEC_ALEXA;      // nome do dispositivo 01 da Alexa
 
 // Um único CertStore global que pode ser usado por todas as conexões.
 BearSSL::CertStore certStore;             // Precisa permanecer ativo o tempo todo qualquer um dos WiFiClientBearSSLs
@@ -130,18 +130,18 @@ uint32_t sntp_update_delay_MS_rfc_not_less_than_15000 () {
 }
 
 // Variáveis MQTT - HiveMQ Cloud
-const char*   DISP_ID                = "ESP-02";           // ID Unico do Dispositivo. Caso sejam usados IDs repetidos a ultima conexão irá sobrepor a anterior. Será redefinido este ID quando da conexão com MQTT concatenando caracteres aleatórios.
-char          DISP_USER[32]          = "ESP-02";           // Usuário do Dispositivo. Tem que ser o ID previamente cadastrado no HiveMQ Cloud. 
-char          DISP_PASSWORD[32]      = "xxxxxxxxxx";       // Senha do Dispositivo. Tem que ser o ID previamente cadastrado no HiveMQ Cloud. 
-char          TOPIC_PUBLISH[64]      = "Sala/PUMPonoff";   // criacao do topico para publish. Informe um topico unico. Caso sejam usados tópicos em duplicidade, o último irá eliminar o anterior.
-char          TOPIC_SENSOR0[64]      = "Sala/Sensor0";     // criacao do topico para publish: Sensor0 
-char          TOPIC_SENSOR1[64]      = "Sala/Sensor1";     // criacao do topico para publish: Sensor1
-char          TOPIC_SUBSCRIBE[64]    = "Sala/PUMPonoff";   // topico para subscribe
-boolean       PUMPstatusAnt          = false;              // status anterior da bomba
+const char*   DISP_ID                = SEC_ID;                 // ID Unico do Dispositivo. Caso sejam usados IDs repetidos a ultima conexão irá sobrepor a anterior. Será redefinido este ID quando da conexão com MQTT concatenando caracteres aleatórios.
+char          DISP_USER[32]          = SEC_USER;               // Usuário do Dispositivo. Tem que ser o ID previamente cadastrado no HiveMQ Cloud. 
+char          DISP_PASSWORD[32]      = SEC_PASSWORD;           // Senha do Dispositivo. Tem que ser o ID previamente cadastrado no HiveMQ Cloud. 
+char          TOPIC_PUBLISH[64]      = SEC_TOPIC_PUBLISH;      // criacao do topico para publish. Informe um topico unico. Caso sejam usados tópicos em duplicidade, o último irá eliminar o anterior.
+char          TOPIC_SENSOR0[64]      = SEC_TOPIC_SENSOR0;      // criacao do topico para publish: Sensor0 
+char          TOPIC_SENSOR1[64]      = SEC_TOPIC_SENSOR1;      // criacao do topico para publish: Sensor1
+char          TOPIC_SUBSCRIBE[64]    = SEC_TOPIC_SUBSCRIBE;    // topico para subscribe
+boolean       PUMPstatusAnt          = false;                  // status anterior da bomba
 
 // Variáveis Webhook - https://trigger.esp8266-server.de/ -  Integração Alexa
-const char* webhookUrl1 = "https://trigger.esp8266-server.de/api/?id=5479&hash=6d327d7ea071b7c3cd95eb9ffc80aa81";    //Trigger1 - Bomba Sala, sensor de disparo de nível alto da Bomba Sala
-const char* webhookUrl2 = "https://trigger.esp8266-server.de/api/?id=5577&hash=6d327d7ea071b7c3cd95eb9ffc80aa81";    //Trigger2 - Bomba Sala, sensor de disparo de nível baixo da Bomba Sala
+const char* webhookUrl1 = SEC_URL1;    //Trigger1 - Bomba Sala, sensor de disparo de nível alto da Bomba Sala
+const char* webhookUrl2 = SEC_URL2;    //Trigger2 - Bomba Sala, sensor de disparo de nível baixo da Bomba Sala
 
 // Variáveis e definição dos pinos (GPIOs)
 int rele0 = 0;                       // rele0 será conectado à GPIO0

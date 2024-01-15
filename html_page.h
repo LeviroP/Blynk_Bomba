@@ -202,78 +202,136 @@ R"=====(
 </html>
 )=====";
 
-const char HTTP_INFO_esphead[]    PROGMEM = "<h3>ESP8266-{1}</h3><hr><dl>";
-const char HTTP_INFO_uptime[]     PROGMEM = "<dt>Tempo atividade</dt><dd>{1} Dias {2}</dd>";
-const char HTTP_INFO_bootcount[]  PROGMEM = "<dt>Inicializações</dt><dd>{1} Boots</dd>";
-const char HTTP_INFO_chipid[]     PROGMEM = "<dt>Chip ID</dt><dd>{1}</dd>";
-const char HTTP_INFO_fchipid[]    PROGMEM = "<dt>Flash Chip ID</dt><dd>{1}</dd>";
-const char HTTP_INFO_idesize[]    PROGMEM = "<dt>Flash Size</dt><dd>{1} bytes</dd>";
-const char HTTP_INFO_flashsize[]  PROGMEM = "<dt>Real Flash Size</dt><dd>{1} bytes</dd>";
-const char HTTP_INFO_corever[]    PROGMEM = "<dt>Core Version</dt><dd>{1}</dd>";
-const char HTTP_INFO_bootver[]    PROGMEM = "<dt>Boot Version</dt><dd>{1}</dd>";
-const char HTTP_INFO_cpufreq[]    PROGMEM = "<dt>CPU Frequency</dt><dd>{1}MHz</dd>";
-const char HTTP_INFO_freeheap[]   PROGMEM = "<dt>Memory - Free Heap</dt><dd>{1} bytes available</dd>";
-const char HTTP_INFO_memsketch[]  PROGMEM = "<dt>Memory - Sketch Size</dt><dd>Used / Total bytes<br/>{1} / {2}";
-const char HTTP_INFO_memsmeter[]  PROGMEM = "<br/><progress value='{1}' max='{2}'></progress></dd>";
-const char HTTP_INFO_lastreset[]  PROGMEM = "<dt>Motivo último reset</dt><dd>{1}</dd></dl><hr>";
-const char HTTP_INFO_wifihead[]   PROGMEM = "<h3>WiFi - Modo: {1}</h3><hr><dl>";
-const char HTTP_INFO_conx[]       PROGMEM = "<dt>Conectado?</dt><dd>{1}</dd>";
-const char HTTP_INFO_stassid[]    PROGMEM = "<dt>Station SSID</dt><dd>{1}</dd>";
-const char HTTP_INFO_staip[]      PROGMEM = "<dt>Station IP</dt><dd>{1}</dd>";
-const char HTTP_INFO_stagw[]      PROGMEM = "<dt>Station Gateway</dt><dd>{1}</dd>";
-const char HTTP_INFO_stasub[]     PROGMEM = "<dt>Station Subnet</dt><dd>{1}</dd>";
-const char HTTP_INFO_dnss[]       PROGMEM = "<dt>DNS Server</dt><dd>{1}</dd>";
-const char HTTP_INFO_host[]       PROGMEM = "<dt>Hostname</dt><dd>{1}</dd>";
-const char HTTP_INFO_stamac[]     PROGMEM = "<dt>Station MAC</dt><dd>{1}</dd>";
-const char HTTP_INFO_autoconx[]   PROGMEM = "<dt>Autoconnect</dt><dd>{1}</dd>";
-const char HTTP_INFO_apssid[]     PROGMEM = "<dt>Access Point SSID</dt><dd>{1}</dd>";
-const char HTTP_INFO_apip[]       PROGMEM = "<dt>Access Point IP</dt><dd>{1}</dd>";
-const char HTTP_INFO_apbssid[]    PROGMEM = "<dt>BSSID</dt><dd>{1}</dd>";
-const char HTTP_INFO_apmac[]      PROGMEM = "<dt>Access Point MAC</dt><dd>{1}</dd>";
-const char HTTP_BACKBTN[]         PROGMEM = "<br><br/><form action='/' method='get'><div id='botao'><button>Voltar</button></div></form><br><br></main>";
-const char HTTP_END[]             PROGMEM = "</body></html>";
+const char HTTP_INFO_esphead[]    PROGMEM = "<h3>ESP8266-{1}</h3><hr><table>";
+const char HTTP_INFO_uptime[]     PROGMEM = "<tr><th>Tempo atividade</th><td>{1} Dias {2}</td></tr>";
+const char HTTP_INFO_bootcount[]  PROGMEM = "<tr><th>Inicializações</th><td>{1} Boots</td></tr>";
+const char HTTP_INFO_chipid[]     PROGMEM = "<tr><th>Chip ID</th><td>{1}</td></tr>";
+const char HTTP_INFO_fchipid[]    PROGMEM = "<tr><th>Flash Chip ID</th><td>{1}</td></tr>";
+const char HTTP_INFO_idesize[]    PROGMEM = "<tr><th>Flash Size</th><td>{1} bytes</td></tr>";
+const char HTTP_INFO_flashsize[]  PROGMEM = "<tr><th>Real Flash Size</th><td>{1} bytes</td></tr>";
+const char HTTP_INFO_corever[]    PROGMEM = "<tr><th>Core Version</th><td>{1}</td></tr>";
+const char HTTP_INFO_bootver[]    PROGMEM = "<tr><th>Boot Version</th><td>{1}</td></tr>";
+const char HTTP_INFO_cpufreq[]    PROGMEM = "<tr><th>CPU Frequency</th><td>{1}MHz</td></tr>";
+const char HTTP_INFO_freeheap[]   PROGMEM = "<tr><th>Memory - Free Heap</th><td>{1} bytes available</td></tr>";
+const char HTTP_INFO_memsketch[]  PROGMEM = "<tr><th>Memory - Sketch Size</th><td>Used / Total bytes<br/>{1} / {2}";
+const char HTTP_INFO_memsmeter[]  PROGMEM = "<br/><progress value='{1}' max='{2}'></progress></td></tr>";
+const char HTTP_INFO_lastreset[]  PROGMEM = "<tr><th>Motivo último reset</th><td>{1}</td></tr></table><hr>";
+const char HTTP_INFO_wifihead[]   PROGMEM = "<h3>WiFi - Modo: {1}</h3><hr><table>";
+const char HTTP_INFO_conx[]       PROGMEM = "<tr><th>Conectado?</th><td>{1}</td></tr>";
+const char HTTP_INFO_stassid[]    PROGMEM = "<tr><th>Station SSID</th><td>{1}</td></tr>";
+const char HTTP_INFO_staip[]      PROGMEM = "<tr><th>Station IP</th><td>{1}</td></tr>";
+const char HTTP_INFO_stagw[]      PROGMEM = "<tr><th>Station Gateway</th><td>{1}</td></tr>";
+const char HTTP_INFO_stasub[]     PROGMEM = "<tr><th>Station Subnet</th><td>{1}</td></tr>";
+const char HTTP_INFO_dnss[]       PROGMEM = "<tr><th>DNS Server</th><td>{1}</td></tr>";
+const char HTTP_INFO_host[]       PROGMEM = "<tr><th>Hostname</th><td>{1}</td></tr>";
+const char HTTP_INFO_stamac[]     PROGMEM = "<tr><th>Station MAC</th><td>{1}</td></tr>";
+const char HTTP_INFO_autoconx[]   PROGMEM = "<tr><th>Autoconnect</th><td>{1}</td></tr>";
+const char HTTP_INFO_apssid[]     PROGMEM = "<tr><th>Access Point SSID</th><td>{1}</td></tr>";
+const char HTTP_INFO_apip[]       PROGMEM = "<tr><th>Access Point IP</th><td>{1}</td></tr>";
+const char HTTP_INFO_apbssid[]    PROGMEM = "<tr><th>BSSID</th><td>{1}</td></tr>";
+const char HTTP_INFO_apmac[]      PROGMEM = "<tr><th>Access Point MAC</th><td>{1}</td></tr></table>";
+const char HTTP_BACKBTN[]         PROGMEM = "<hr><div class='button-container'><form action='/' method='get'><button type='submit'>Voltar</button></form></div></main>";
+const char HTTP_END[]             PROGMEM = "</div></body></html>";
 
-const char HTTP_INFO_paramhead[]  PROGMEM = "<hr><h3>Parâmetros: {1}</h3><hr><dl>";
-const char HTTP_INFO_broker[]     PROGMEM = "<dt>Broker MQTT</dt><dd>{1}</dd>";
-const char HTTP_INFO_porta[]      PROGMEM = "<dt>Porta Broker</dt><dd>{1}</dd>";
-const char HTTP_INFO_user[]       PROGMEM = "<dt>Usuário</dt><dd>{1}</dd>";
-const char HTTP_INFO_pass[]       PROGMEM = "<dt>Senha</dt><dd>{1}</dd>";
-const char HTTP_INFO_pub[]        PROGMEM = "<dt>Tópico Publish</dt><dd>{1}</dd>";
-const char HTTP_INFO_sub[]        PROGMEM = "<dt>Tópico Subscribe</dt><dd>{1}</dd>";
-const char HTTP_INFO_hostmdns[]   PROGMEM = "<dt>Host mDNS</dt><dd>http://{1}.local</dd>";
-const char HTTP_INFO_alexa01[]    PROGMEM = "<dt>Dispositivo Alexa</dt><dd>{1}</dd>";
+const char HTTP_INFO_paramhead[]  PROGMEM = "<hr><h3>Parâmetros: {1}</h3><hr><table>";
+const char HTTP_INFO_broker[]     PROGMEM = "<tr><th>Broker MQTT</th><td>{1}<br/>{2}</td></tr>";
+const char HTTP_INFO_porta[]      PROGMEM = "<tr><th>Porta Broker</th><td>{1}</td></tr>";
+const char HTTP_INFO_user[]       PROGMEM = "<tr><th>Usuário</th><td>{1}</td></tr>";
+const char HTTP_INFO_pass[]       PROGMEM = "<tr><th>Senha</th><td>{1}</td></tr>";
+const char HTTP_INFO_pub[]        PROGMEM = "<tr><th>Tópico Publish</th><td>{1}</td></tr>";
+const char HTTP_INFO_sub[]        PROGMEM = "<tr><th>Tópico Subscribe</th><td>{1}</td></tr>";
+const char HTTP_INFO_hostmdns[]   PROGMEM = "<tr><th>Host mDNS</th><td>http://{1}.local</td></tr>";
+const char HTTP_INFO_alexa01[]    PROGMEM = "<tr><th>Dispositivo Alexa</th><td>{1}</td></tr></table>";
 
 const char HTTP_HEAD_START[]      PROGMEM =
 R"=====(
 <!DOCTYPE html>
 <html lang='pt-BR'>
-    <head>
-        <meta name='format-detection' content='telephone=no'>
-        <meta charset='UTF-8'>
-        <meta name='viewport' content='width=device-width,initial-scale=1,user-scalable=no'/>
-        <title>ESP-Info</title>
-    </head>
-        
+<head>
+    <meta name='format-detection' content='telephone=no'>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1, user-scalable=no'/>
+    <title>ESP-Info</title>
     <style>
-        #botao{ text-align: center }
-        body {margin:0; font-family:'Segoe UI',Roboto,'Helvetica Neue',Arial,'Noto Sans','Liberation Sans'; font-size:1rem; font-weight:400; line-height:1.5; color:#212529; background-color:#f5f5f5}
-        button{cursor: pointer;border:1px solid transparent;color:#fff;background-color:#007bff;border-color:#007bff;padding:.5rem 1rem;font-size:1.25rem;line-height:1.5;border-radius:.3rem;width:30%}
-        .form-signin{width:100%;max-width:400px;padding:15px;margin:auto;}
-        h1{text-align: center;color:blue;font-style: italic;}
-        h3{margin-left: 20px;color:black;font-style: italic;}
-        dl{
-            display: block;
-            margin-top: 1em;
-            margin-bottom: 1em;
-            margin-left: 20px;
-            margin-right: 0px;
-            color: black;
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Liberation Sans';
+            font-size: 16px;
+            background-color: #f5f5f5;
+            color: #212529;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 360px;
+            margin: auto;
+            padding: 20px;
+        }
+
+        h1, h3 {
+            color: blue;
+            font-style: italic;
+            text-align: center;
+        }
+
+        hr {
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 8px;
+        }
+
+        tr:nth-child(odd) {
+            background-color: #f5f5f5; /* Azul claro para linhas ímpares #CAF0F8 */
+        }
+
+        tr:nth-child(even) {
+            background-color: #FFFFFF; /* Vermelho claro para linhas pares #FFC0CB */
+        }
+
+        .button-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        button {
+            cursor: pointer;
+            border: 1px solid transparent;
+            color: #fff;
+            background-color: #007bff;
+            border-color: #007bff;
+            padding: 10px 20px;
+            font-size: 18px;
+            border-radius: 5px;
+            width: auto;
+        }
+
+        @media (max-width: 480px) {
+            body {
+                font-size: 14px;
             }
+
+            button {
+                padding: 8px 15px;
+                font-size: 16px;
+            }
+        }
     </style>
-        
-        <body>
-            <main class='form-signin'>
-                <h1>Informações Dispositivo</h1><hr>
+</head>
+<body>
+    <div class='container'>
+        <main class='form-signin'>
+            <h1>Informações do Dispositivo</h1>
+            <hr>
 )=====";                
 
 const char HTTP_HELP[]            PROGMEM =

@@ -1043,7 +1043,9 @@ String getInfoData(String id){
   }
   else if(id==F("broker")){
     p = FPSTR(HTTP_INFO_broker);
-    p.replace(F("{1}"),(String)user_param.URL);
+    // p.replace(F("{1}"),(String)user_param.URL);
+    p.replace(F("{1}"),String(user_param.URL).substring(0,24));
+    p.replace(F("{2}"),String(user_param.URL).substring(24));
   }
   else if(id==F("porta")){
     p = FPSTR(HTTP_INFO_porta);
@@ -1178,12 +1180,12 @@ void handleInfo() {
   for(size_t i=0; i<infos;i++){
     if(infoids[i] != NULL) pageInfo += getInfoData(infoids[i]);
   }
-  pageInfo += F("</dl>");
-
-  pageInfo += F("<hr><h3>Sobre</h3><hr><dl>");
-  pageInfo += F("<dt>Software</dt><dd>")+ softwareNom + F("</dd>");
-  pageInfo += F("<dt>Compilado em</dt><dd>")+ formattedDateTime() + F("</dd>");
-  pageInfo += F("<dt>Por</dt><dd>Léviro Péres Emydio</dd></dl>");
+ 
+  pageInfo += F("</table>");
+  pageInfo += F("<hr><h3>Sobre</h3><hr><table>");
+  pageInfo += F("<tr><th>Software</th><td>")+ softwareNom + F("</td></tr>");
+  pageInfo += F("<tr><th>Compilado em</th><td>")+ formattedDateTime() + F("</td></tr>");
+  pageInfo += F("<tr><th>Por</th><td>Léviro Péres Emydio</td></tr></table>");
   
   pageInfo += FPSTR(HTTP_BACKBTN);
  // pageInfo += FPSTR(HTTP_HELP);

@@ -8,9 +8,10 @@
 #include <Espalexa.h>           // por Christian Schwinne, ver 2.7.0
 #include <LittleFS.h>           // permite acessar a memória flash: ler, gravar, fechar e excluir arquivos (pasta data) - para upload do Certificado TLS
 #include <CertStoreBearSSL.h>   // uso de certificados CA SSL/TLS
-#include <ElegantOTA.h>         // por Ayush Sharma, ver 2.2.9 - OTAs para ESP8266 ou ESP32 elegante
+// #include <ElegantOTA.h>         // por Ayush Sharma, ver 2.2.9 - OTAs para ESP8266 ou ESP32 elegante
 #include <ArduinoJson.h>        // biblioteca JSON para C++, por Benoît Blanchon, versão 6.21.3
 #include <ESP8266HTTPClient.h>  // biblioteca http para enviar mensagens para o webhook
+
 
 #include "secrets.h"
 
@@ -33,7 +34,8 @@ const byte WEBSOCKET_PORT = 81;
 const byte DNSSERVER_PORT = 53;
 
 // Porta do Servidor Broker MQTT (selecionar/configurar conforme utilização)
-const uint16_t BROKER_PORT = 8883;       // Porta do Broker HiveMQ Cloud (privado)
+// const uint16_t BROKER_PORT = 8883;       // Porta do Broker HiveMQ Cloud (privado)
+word BROKER_PORT = 8883;       // Porta do Broker HiveMQ Cloud (privado)
 
 // WEB server
 ESP8266WebServer server(WEBSERVER_PORT);
@@ -46,10 +48,6 @@ DNSServer dnsServer;
 
 // instancia global do objeto Alexa
 Espalexa espalexa;
-
-// Instancias cliente para envio de requisições para o Webhook
-WiFiClient webhook_client;      // instancia WiFi Client
-HTTPClient sender;              // instancia HTTP Client
 
 // Função Alexa
 void callbackAlexa_01(uint8_t brilho);
@@ -71,6 +69,14 @@ BearSSL::CertStore certStore;             // Precisa permanecer ativo o tempo to
 BearSSL::WiFiClientSecure esp_client;
 PubSubClient * mqtt_client;
 
+// Instancias cliente para envio de requisições para o Webhook
+// WiFiClientSecure webhook_client;      // instancia WiFi Client
+// BearSSL::WiFiClientSecure webhook_client;
+// BearSSL::WiFiClientSecure *webhook_client = new BearSSL::WiFiClientSecure();
+// std::unique_ptr<BearSSL::WiFiClientSecure> webhook_client(new BearSSL::WiFiClientSecure);
+WiFiClient webhook_client;            // instancia WiFi Client
+HTTPClient sender_https;              // instancia HTTP Client
+
 // Credenciais de acesso à rede WiFi, SSID e senha de acesso à rede WiFi
 struct settings {
   char ssid[32];
@@ -84,13 +90,17 @@ const char* CONFIG_FILE = "/config.json";
 // Definindo a estrutura de dados referente aos parâmetros de configuração
 struct ConfigData {
   char        URL[64];      // URL do servidor broker MQTT
-  uint16_t    PORT;         // Porta do Broker
+  word        PORT;         // Porta do Broker
   char        USER[32];     // Usuário do Dispositivo. Tem que ser o ID previamente cadastrado no broker.
   char        PASS[32];     // Senha do Dispositivo. Tem que ser o ID previamente cadastrado no broker.
   char        PUB[64];      // Tópico para publish. Informe um topico unico. Caso sejam usados tópicos em duplicidade, o último irá eliminar o anterior.
-  char        SUB[64];      // Tópico para subscribe
+  char        SUB1[64];     // Tópico para subscribe
+  char        SUB2[64];     // Tópico para subscribe
   char        host[32];     // Nome do host para mDNS. Para "esp8266", digitar no browse http://esp8266.local
   String      Alexa01;      // nome do dispositivo 01 da Alexa
+  char        api[34];      // Chave API Trigger
+  char        id1[5];       // id Trigger1 - Bomba Julia, sensor de disparo de nível alto da Bomba Júlia
+  char        id2[5];       // id Trigger2 - Bomba Julia, sensor de disparo de nível baixo da Bomba Júlia
   word        bootCount;    // Número de inicializações
 } user_param = {};          // <- configuração global do objeto
 
@@ -140,8 +150,8 @@ char          TOPIC_SUBSCRIBE[64]    = SEC_TOPIC_SUBSCRIBE;    // topico para su
 boolean       PUMPstatusAnt          = false;                  // status anterior da bomba
 
 // Variáveis Webhook - https://trigger.esp8266-server.de/ -  Integração Alexa
-const char* webhookUrl1 = SEC_URL1;    //Trigger1 - Bomba Sala, sensor de disparo de nível alto da Bomba Sala
-const char* webhookUrl2 = SEC_URL2;    //Trigger2 - Bomba Sala, sensor de disparo de nível baixo da Bomba Sala
+char webhookUrl1[84];    //Trigger1 - Bomba Sala, sensor de disparo de nível alto da Bomba Sala
+char webhookUrl2[84];    //Trigger2 - Bomba Sala, sensor de disparo de nível baixo da Bomba Sala
 
 // Variáveis e definição dos pinos (GPIOs)
 int rele0 = 0;                       // rele0 será conectado à GPIO0
@@ -169,7 +179,10 @@ void setup() {
   pinMode(led,OUTPUT);                       // inicializando o pino 2 como uma saída
   pinMode(sensor0,INPUT);                    // inicializando o pino 3 como uma entrada
   pinMode(sensor1,INPUT);                    // inicializando o pino 1 como uma entrada
-  
+
+  sprintf(webhookUrl1, "%s?id=%s&hash=%s", SEC_URL_TRIGGER, SEC_ID_TRIGGER1, SEC_API_TRIGGER);
+  sprintf(webhookUrl2, "%s?id=%s&hash=%s", SEC_URL_TRIGGER, SEC_ID_TRIGGER2, SEC_API_TRIGGER);
+
   digitalWrite(led, ledState);               // ligando o led (pino 2)
 
   // Serial
@@ -210,6 +223,21 @@ void setup() {
     Serial.print(F("Salvando configuração no arquivo config.json ..."));
   #endif
   saveConfiguration(CONFIG_FILE,user_param);          // Salva configuração
+  updateVariables();                                  // Atualiza variáveis
+
+  #ifdef DEBUG
+    Serial.println(F("Variáveis atualizadas:"));
+    Serial.print("TOPIC_PUBLISH = ");
+    Serial.println(TOPIC_PUBLISH);
+    Serial.print("TOPIC_SUBSCRIBE = ");
+    Serial.println(TOPIC_SUBSCRIBE);
+    Serial.print("TOPIC_SENSOR0 = ");
+    Serial.println(TOPIC_SENSOR0);
+    Serial.print("TOPIC_SENSOR1 = ");
+    Serial.println(TOPIC_SENSOR1);
+    Serial.println(webhookUrl1);
+    Serial.println(webhookUrl2);
+  #endif
 
   #ifdef DEBUG
     Serial.println(F("Iniciando conexão à rede WiFi:"));
@@ -246,7 +274,7 @@ void setup() {
  setDateTime();                           // sincroniza o relógio do ESP com horário do servidor NTP, quando no modo ST (WiFi conectado). Alguns caso, chame isso antes da conexão WiFi!
  configMQTT();                            // configura o servidor MQTT usando certificado para conexão TLS, quando no modo ST (WiFi conectado)
  configAlexa();                           // configura Alexa
- ElegantOTA.begin(&server);               // Inicia ElegantOTA
+ // ElegantOTA.begin(&server);               // Inicia ElegantOTA
  
 }
 

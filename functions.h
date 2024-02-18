@@ -744,10 +744,58 @@ void configMQTT(){
 // Função enviarRequisicao: Envia requição para o Webhook
 //=====================================================
 bool enviarRequisicao(const char *url) {
-  sender.begin(webhook_client ,url);
-  int httpCode = sender.GET();
-  sender.end();
-  return httpCode == 200; // Verificar se a requisição foi bem-sucedida
+
+  if (WiFi.status() == WL_CONNECTED) {  
+    // webhook_client.setInsecure();     // Conexão criptografada sem verificação de certificado.
+    if (url == "") {
+      #ifdef DEBUG
+        Serial.println("URL webhook nula.");
+      #endif
+      return false;                   // Retorna falso se o URL for nulo
+    }
+
+    if (sender_https.begin(webhook_client, url)) {  // [HTTPS] begin ...
+      int httpCode = sender_https.GET();            //[HTTPS] GET...
+
+      if (httpCode > 0) {             // httpCode será negativo em caso de erro
+        // O cabeçalho HTTP foi enviado e o cabeçalho de resposta do servidor foi tratado
+        #ifdef DEBUG
+          Serial.print("[HTTPS] Webhook GET... código: ");
+          Serial.println(httpCode);
+        #endif
+        // Arquivo encontrado no servidor
+        if (httpCode == HTTP_CODE_OK || httpCode == HTTP_CODE_MOVED_PERMANENTLY) {
+          String payload = sender_https.getString();   // payload = OK
+          #ifdef DEBUG
+            Serial.print("Webhook payload = ");
+            Serial.println(payload);
+          #endif
+          sender_https.end();
+          return true;          
+        }
+      } else {
+        // GET... failed, error: connection failed
+        #ifdef DEBUG
+          Serial.printf("[HTTPS] Webhook GET... falhou, erro: %s\n", sender_https.errorToString(httpCode).c_str()); 
+          Serial.print("[HTTPS] Webhook GET... código: ");
+          Serial.println(httpCode);
+          Serial.print("Webhook url: ");
+          Serial.println(url);
+        #endif
+      }
+      sender_https.end();
+    } else {
+      // [HTTPS] Não foi possível conectar
+      #ifdef DEBUG
+        Serial.printf("[HTTPS] Webhook: Não foi possível conectar\n");
+      #endif
+    }
+    return false;
+
+  } else{     // se o WiFi não está conectado, retorna falso
+      return false;
+  }
+
 }   // fim enviarRequisicao
 
 
@@ -768,11 +816,11 @@ void checkSensores() {
     // realizar a requisição HTTP Webhook
     if (enviarRequisicao(webhookUrl2)) {    //Trigger2 - Bomba Sala, sensor de disparo de nível baixo da Bomba Sala
       #ifdef DEBUG
-        Serial.println("Webhook acionado com sucesso!");
+        Serial.println("Webhook acionado com sucesso! Trigger2 - Bomba Sala, sensor de disparo de nível baixo da Bomba Sala");
       #endif
     } else {
       #ifdef DEBUG
-        Serial.println("Erro ao acionar o webhook.");
+        Serial.println("Erro ao acionar o webhook. Trigger2 - Bomba Sala, sensor de disparo de nível baixo da Bomba Sala");
       #endif
     }     
      debounceSensor0 = millis();
@@ -789,11 +837,11 @@ void checkSensores() {
     // realizar a requisição HTTP Webhook
     if (enviarRequisicao(webhookUrl1)) {    //Trigger1 - Bomba Sala, sensor de disparo de nível alto da Bomba Sala
       #ifdef DEBUG
-        Serial.println("Webhook acionado com sucesso!");
+        Serial.println("Webhook acionado com sucesso! Trigger1 - Bomba Sala, sensor de disparo de nível alto da Bomba Sala");
       #endif
     } else {
       #ifdef DEBUG
-        Serial.println("Erro ao acionar o webhook.");
+        Serial.println("Erro ao acionar o webhook. Trigger1 - Bomba Sala, sensor de disparo de nível alto da Bomba Sala");
       #endif
     }
      debounceSensor1 = millis();
@@ -985,7 +1033,8 @@ String getInfoData(String id){
   }
   else if(id==F("apip")){
     p = FPSTR(HTTP_INFO_apip);
-    p.replace(F("{1}"),WiFi.softAPIP().toString());
+    // p.replace(F("{1}"),WiFi.softAPIP().toString());
+    p.replace(F("{1}"),"192.168.4.1");
   }
   else if(id==F("apmac")){
     p = FPSTR(HTTP_INFO_apmac);
@@ -1063,9 +1112,13 @@ String getInfoData(String id){
     p = FPSTR(HTTP_INFO_pub);
     p.replace(F("{1}"),(String)user_param.PUB);
   }
-  else if(id==F("sub")){
-    p = FPSTR(HTTP_INFO_sub);
-    p.replace(F("{1}"),(String)user_param.SUB);
+  else if(id==F("sub1")){
+    p = FPSTR(HTTP_INFO_sub1);
+    p.replace(F("{1}"),(String)user_param.SUB1);
+  }
+  else if(id==F("sub2")){
+    p = FPSTR(HTTP_INFO_sub2);
+    p.replace(F("{1}"),(String)user_param.SUB2);
   }
   else if(id==F("hostmdns")){
     p = FPSTR(HTTP_INFO_hostmdns);
@@ -1075,7 +1128,19 @@ String getInfoData(String id){
     p = FPSTR(HTTP_INFO_alexa01);
     p.replace(F("{1}"),user_param.Alexa01);
   }
-
+  else if(id==F("api")){
+    p = FPSTR(HTTP_INFO_api);
+    p.replace(F("{1}"),String(user_param.api).substring(0,24));
+    p.replace(F("{2}"),String(user_param.api).substring(24));
+  }
+  else if(id==F("id1")){
+    p = FPSTR(HTTP_INFO_id1);
+    p.replace(F("{1}"),user_param.id1);
+  }
+  else if(id==F("id2")){
+    p = FPSTR(HTTP_INFO_id2);
+    p.replace(F("{1}"),user_param.id2);
+  }
   return p;
 }   // fim getInfoData
 
@@ -1136,7 +1201,7 @@ String formattedDateTime() {
 void handleInfo() {
   String pageInfo = FPSTR(HTTP_HEAD_START);
   uint16_t infos = 0;
-  infos = 37;
+  infos = 41;
     String infoids[] = {
       F("esphead"),
       F("uptime"),
@@ -1172,9 +1237,13 @@ void handleInfo() {
       F("user"),
       F("pass"),
       F("pub"),
-      F("sub"),
+      F("sub1"),
+      F("sub2"),
       F("hostmdns"),
-      F("alexa01")
+      F("alexa01"),
+      F("api"),
+      F("id1"),
+      F("id2")
     };
 
   for(size_t i=0; i<infos;i++){
@@ -1188,7 +1257,6 @@ void handleInfo() {
   pageInfo += F("<tr><th>Por</th><td>Léviro Péres Emydio</td></tr></table>");
   
   pageInfo += FPSTR(HTTP_BACKBTN);
- // pageInfo += FPSTR(HTTP_HELP);
   pageInfo += FPSTR(HTTP_END);
 
   server.send(200, "text/html", pageInfo);
@@ -1196,45 +1264,137 @@ void handleInfo() {
 
 
 //=====================================================
+// Função updateVariables: Atualiza variáveis
+//=====================================================
+void updateVariables() {
+
+  strlcpy(BROKER_MQTT, user_param.URL, sizeof(BROKER_MQTT)); 
+  BROKER_PORT = user_param.PORT;
+  strlcpy(DISP_USER, user_param.USER, sizeof(DISP_USER)); 
+  strlcpy(DISP_PASSWORD, user_param.PASS, sizeof(DISP_PASSWORD)); 
+  strlcpy(TOPIC_PUBLISH, user_param.PUB, sizeof(TOPIC_PUBLISH)); 
+  strlcpy(TOPIC_SUBSCRIBE, user_param.PUB, sizeof(TOPIC_SUBSCRIBE)); 
+  strlcpy(TOPIC_SENSOR0, user_param.SUB1, sizeof(TOPIC_SENSOR0)); 
+  strlcpy(TOPIC_SENSOR1, user_param.SUB2, sizeof(TOPIC_SENSOR1)); 
+  strlcpy(myHostname, user_param.host, sizeof(myHostname)); 
+  deviceName01 = user_param.Alexa01;
+
+  if ((user_param.api == "") || (user_param.id1 == "") || (user_param.id2 == "")){
+      sprintf(webhookUrl1, "%s?id=%s&hash=%s", SEC_URL_TRIGGER, SEC_ID_TRIGGER1, SEC_API_TRIGGER);
+      sprintf(webhookUrl2, "%s?id=%s&hash=%s", SEC_URL_TRIGGER, SEC_ID_TRIGGER2, SEC_API_TRIGGER);
+  } else{
+      sprintf(webhookUrl1, "%s?id=%s&hash=%s", SEC_URL_TRIGGER, user_param.id1, user_param.api);
+      sprintf(webhookUrl2, "%s?id=%s&hash=%s", SEC_URL_TRIGGER, user_param.id1, user_param.api);
+  }
+}   // fim updateVariables
+
+
+//=====================================================
 // Função handleParam: Configura servidor/página de parâmetros
 //=====================================================
 void handleParam() {
 
- if (server.method() == HTTP_POST) {
-    strncpy(user_param.URL, server.arg("url").c_str(), sizeof(user_param.URL));       // A função strncpy copia os n primeiros caracteres de uma string para outra.
-    user_param.PORT = server.arg("port").toInt();                                     // Contudo, isso pode causar overflow, sendo necessário definir onde termina a string destino.
-    strncpy(user_param.USER, server.arg("user").c_str(), sizeof(user_param.USER));    // Para isso, coloca-se o terminador \0 no no final da string.
-    strncpy(user_param.PASS, server.arg("pass").c_str(), sizeof(user_param.PASS));
-    strncpy(user_param.PUB, server.arg("pub").c_str(), sizeof(user_param.PUB));
-    strncpy(user_param.SUB, server.arg("sub").c_str(), sizeof(user_param.SUB));
-    strncpy(user_param.host, server.arg("host").c_str(), sizeof(user_param.host));
-    user_param.Alexa01 = server.arg("alexa01");
-    user_param.URL[server.arg("url").length()] = '\0';
-    user_param.USER[server.arg("user").length()] = '\0';
-    user_param.PASS[server.arg("pass").length()] = '\0';
-    user_param.PUB[server.arg("pub").length()] = '\0';
-    user_param.SUB[server.arg("sub").length()] = '\0';
-    user_param.host[server.arg("host").length()] = '\0';
+  String htmlContent = FPSTR(webpageParam); // HTML base do formulário
 
-//    EEPROM.put(0, user_wifi);
-//    EEPROM.commit();
+  if (server.method() == HTTP_POST && server.uri() == "/param") {   // apertou o botão salvar
+    // Recebe os dados do formulário
+    String url = server.arg("url");
+    String port = server.arg("port");
+    String user = server.arg("user");
+    String pass = server.arg("pass");
+    String pub = server.arg("pub");
+    String sub1 = server.arg("sub1");
+    String sub2 = server.arg("sub2");
+    String host = server.arg("host");
+    String alexa01 = server.arg("alexa01");
+    String api = server.arg("api");
+    String id1 = server.arg("id1");
+    String id2 = server.arg("id2");
 
-    Serial.println("SALVOU ........");
+    File configFile = LittleFS.open(CONFIG_FILE, "w+");
 
-    server.send(200, "text/html", F("<!doctype html><html lang='en'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1'><title>Setup Portal</title><style>*,::after,::before{box-sizing:border-box;}body{margin:0;font-family:'Segoe UI',Roboto,'Helvetica Neue',Arial,'Noto Sans','Liberation Sans';font-size:1rem;font-weight:400;line-height:1.5;color:#212529;background-color:#f5f5f5;}.form-control{display:block;width:100%;height:calc(1.5em + .75rem + 2px);border:1px solid #ced4da;}button{border:1px solid transparent;color:#fff;background-color:#007bff;border-color:#007bff;padding:.5rem 1rem;font-size:1.25rem;line-height:1.5;border-radius:.3rem;width:100%}.form-signin{width:100%;max-width:400px;padding:15px;margin:auto;}h1,p{text-align: center}</style> </head> <body><main class='form-signin'> <h1>Configurar Parâmetros</h1> <br/> <p>Suas configura&ccedil;&otilde;es foram salvas com sucesso!<br />O m&oacute;dulo ser&aacute; reinicializado em alguns segundos.</p></main></body></html>") );
-//    ESP.reset();
+    if (!configFile) {
+      #ifdef DEBUG
+        Serial.println(F("Falha ao criar ou gravar o arquivo JSON"));
+      #endif
+    } else {
+      StaticJsonDocument<768> jsonDoc;
+      
+      // Atribui valores ao arquivo JSON e grava
+      jsonDoc["URL"] = url;
+      jsonDoc["PORT"] = port;
+      jsonDoc["USER"] = user;
+      jsonDoc["PASS"] = pass;
+      jsonDoc["PUB"] = pub;
+      jsonDoc["SUB1"] = sub1;
+      jsonDoc["SUB2"] = sub2;
+      jsonDoc["host"] = host;
+      jsonDoc["Alexa01"] = alexa01;
+      jsonDoc["api"] = api;
+      jsonDoc["id1"] = id1;
+      jsonDoc["id2"] = id2;
+      jsonDoc["bootCount"] = user_param.bootCount;
 
-  } else {  
-    String pageParam = FPSTR(webpageParam);                      // carrega o código da página Parâmetros - webpageParam
-    pageParam.replace(F("{url}"),String(user_param.URL));        // atualiza o campo url
-    pageParam.replace(F("{port}"),String(user_param.PORT));      // atualiza o campo port
-    pageParam.replace(F("{user}"),String(user_param.USER));      // atualiza o campo user
-    pageParam.replace(F("{pass}"),String(user_param.PASS));      // atualiza o campo pass
-    pageParam.replace(F("{pub}"),String(user_param.PUB));        // atualiza o campo pub
-    pageParam.replace(F("{sub}"),String(user_param.SUB));        // atualiza o campo sub
-    pageParam.replace(F("{host}"),String(user_param.host));      // atualiza o campo host
-    pageParam.replace(F("{alexa01}"),user_param.Alexa01);        // atualiza o campo alexa01
-    server.send(200, "text/html", pageParam);
+      serializeJsonPretty(jsonDoc, configFile);
+      configFile.close();
+
+      #ifdef DEBUG
+        Serial.println(F("\nGravando configuração no arquivo config.json:"));
+        serializeJsonPretty(jsonDoc, Serial);
+        Serial.println();
+      #endif
+    }
+
+    htmlContent = FPSTR(webpageReset);
+    server.send(200, "text/html", htmlContent);
+    delay (12000);
+    ESP.reset();
+
+  }else if (server.uri() == "/param") {     // carregando valores na página HTML
+    // Lendo o arquivo de configuração
+    File configFile = LittleFS.open(CONFIG_FILE, "r");
+  
+    // Aloca um JsonDocument temporário
+    // Não se esqueça de alterar a capacidade para atender às suas necessidades.
+    // Use https://arduinojson.org/assistant para calcular a capacidade.
+    StaticJsonDocument<768> jsonDoc;
+
+    // Desserializar o documento JSON
+    DeserializationError error = deserializeJson(jsonDoc, configFile);
+  
+    if (error) {
+        // Falha na leitura
+        #ifdef DEBUG
+          Serial.print(F("\nFalha ao ler o arquivo JSON. Falha: "));
+          Serial.println(error.f_str());
+        #endif
+    } else {
+        // String htmlContent = ...; // HTML base do formulário
+
+        // Substitui os placeholders pelos valores de configuração
+        htmlContent.replace("{url}", jsonDoc["URL"].as<String>());
+        htmlContent.replace("{port}", jsonDoc["PORT"].as<String>());
+        htmlContent.replace("{user}", jsonDoc["USER"].as<String>());
+        htmlContent.replace("{pass}", jsonDoc["PASS"].as<String>());
+        htmlContent.replace("{pub}", jsonDoc["PUB"].as<String>());
+        htmlContent.replace("{sub1}", jsonDoc["SUB1"].as<String>());
+        htmlContent.replace("{sub2}", jsonDoc["SUB2"].as<String>());
+        htmlContent.replace("{host}", jsonDoc["host"].as<String>());
+        htmlContent.replace("{alexa01}", jsonDoc["Alexa01"].as<String>());
+        htmlContent.replace("{api}", jsonDoc["api"].as<String>());
+        htmlContent.replace("{id1}", jsonDoc["id1"].as<String>());
+        htmlContent.replace("{id2}", jsonDoc["id2"].as<String>());
+        server.send(200, "text/html", htmlContent);
+
+        // Feche o arquivo (curiosamente, o destructor do arquivo não fecha o arquivo)
+        configFile.close();
+
+        #ifdef DEBUG
+          Serial.println(F("\nCarregou HTML com a configuração do arquivo config.json:"));
+          serializeJsonPretty(jsonDoc, Serial);
+          Serial.println("");
+        #endif
+    }
   }
   
 }   // fim handleParam
@@ -1247,11 +1407,11 @@ void configAlexa() {
   if(WiFi.status() == WL_CONNECTED){
     
     server.on("/info", handleInfo);              // Configurando página de informações
-    // server.on("/param", handleParam);            // Configurando página de parâmetros
+    server.on("/param", handleParam);            // Configurando página de parâmetros
     
     server.onNotFound([](){
       if (!espalexa.handleAlexaApiCall(server.uri(),server.arg(0))){      // se você não conhece o URI, pergunte ao espalexa se é uma solicitação de controle do Alexa
-        server.send(404, "text/plain", "Pagina nao encontrada!");         // o que você quiser fazer com 404s
+        server.send(404, "text/plain", "Pagina nao encontrada! uri = "+server.uri());         // o que você quiser fazer com 404s
         }
       });
       
@@ -1319,9 +1479,13 @@ void  resetConfiguration() {
   strlcpy(user_param.USER, DISP_USER, sizeof(user_param.USER)); 
   strlcpy(user_param.PASS, DISP_PASSWORD, sizeof(user_param.PASS)); 
   strlcpy(user_param.PUB, TOPIC_PUBLISH, sizeof(user_param.PUB)); 
-  strlcpy(user_param.SUB, TOPIC_SUBSCRIBE, sizeof(user_param.SUB)); 
+  strlcpy(user_param.SUB1, TOPIC_SENSOR0, sizeof(user_param.SUB1)); 
+  strlcpy(user_param.SUB2, TOPIC_SENSOR1, sizeof(user_param.SUB2)); 
   strlcpy(user_param.host, myHostname, sizeof(user_param.host)); 
   user_param.Alexa01 = deviceName01;
+  strlcpy(user_param.api, SEC_API_TRIGGER, sizeof(user_param.api)); 
+  strlcpy(user_param.id1, SEC_ID_TRIGGER1, sizeof(user_param.id1)); 
+  strlcpy(user_param.id2, SEC_ID_TRIGGER2, sizeof(user_param.id2)); 
   user_param.bootCount = 0;
 }   // fim resetConfiguration
 
@@ -1353,14 +1517,18 @@ void loadConfiguration(const char *CONFIG_FILE, ConfigData &user_param) {
     // Sucesso na leitura
     // Copia os valores do JsonDocument para o ConfigData
     strlcpy(user_param.URL, jsonDoc["URL"] | "", sizeof(user_param.URL)); 
-    user_param.PORT = jsonDoc["PORT"] | 0;
+    user_param.PORT = jsonDoc["PORT"];
     strlcpy(user_param.USER, jsonDoc["USER"] | "", sizeof(user_param.USER)); 
     strlcpy(user_param.PASS, jsonDoc["PASS"] | "", sizeof(user_param.PASS)); 
     strlcpy(user_param.PUB, jsonDoc["PUB"] | "", sizeof(user_param.PUB)); 
-    strlcpy(user_param.SUB, jsonDoc["SUB"] | "", sizeof(user_param.SUB)); 
+    strlcpy(user_param.SUB1, jsonDoc["SUB1"] | "", sizeof(user_param.SUB1)); 
+    strlcpy(user_param.SUB2, jsonDoc["SUB2"] | "", sizeof(user_param.SUB2)); 
     strlcpy(user_param.host, jsonDoc["host"] | "", sizeof(user_param.host)); 
     user_param.Alexa01 = jsonDoc["Alexa01"].as<String>();
     user_param.bootCount = jsonDoc["bootCount"] | 0;
+    strlcpy(user_param.api, jsonDoc["api"] | "", sizeof(user_param.api)); 
+    strlcpy(user_param.id1, jsonDoc["id1"] | "", sizeof(user_param.id1)); 
+    strlcpy(user_param.id2, jsonDoc["id2"] | "", sizeof(user_param.id2)); 
 
     // Feche o arquivo (curiosamente, o destructor do arquivo não fecha o arquivo)
     configFile.close();
@@ -1399,9 +1567,13 @@ void saveConfiguration(const char *CONFIG_FILE, const ConfigData &user_param) {
     jsonDoc["USER"]       = user_param.USER;
     jsonDoc["PASS"]       = user_param.PASS;
     jsonDoc["PUB"]        = user_param.PUB;
-    jsonDoc["SUB"]        = user_param.SUB;
+    jsonDoc["SUB1"]       = user_param.SUB1;
+    jsonDoc["SUB2"]       = user_param.SUB2;
     jsonDoc["host"]       = user_param.host;
     jsonDoc["Alexa01"]    = user_param.Alexa01;
+    jsonDoc["api"]        = user_param.api;
+    jsonDoc["id1"]        = user_param.id1;
+    jsonDoc["id2"]        = user_param.id2;
     jsonDoc["bootCount"]  = user_param.bootCount;
 
     serializeJsonPretty(jsonDoc, configFile);

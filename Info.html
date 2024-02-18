@@ -1,78 +1,15 @@
 <!DOCTYPE html>
 <html lang='pt-BR'>
-    <head>
-        <meta name='format-detection' content='telephone=no'>
-        <meta charset='UTF-8'>
-        <meta name='viewport' content='width=device-width,initial-scale=1,user-scalable=no'/>
-        <title>ESP-Info</title>
-
-    </head>
-        
-    <style>
-        #botao{ text-align: center }
-        body {margin:0; font-family:'Segoe UI',Roboto,'Helvetica Neue',Arial,'Noto Sans','Liberation Sans'; font-size:1rem; font-weight:400; line-height:1.5; color:#212529; background-color:#f5f5f5}
-        button{cursor: pointer;border:1px solid transparent;color:#fff;background-color:#007bff;border-color:#007bff;padding:.5rem 1rem;font-size:1.25rem;line-height:1.5;border-radius:.3rem;width:30%}
-        .form-signin{width:100%;max-width:400px;padding:15px;margin:auto;}
-        h1{text-align: center;color:blue;font-style: italic;}
-        h3{margin-left: 20px;color:black;font-style: italic;}
-        dl{
-            display: block;
-            margin-top: 1em;
-            margin-bottom: 1em;
-            margin-left: 20px;
-            margin-right: 0px;
-            color: black;
-            }
-    </style>
-        
-        <body>
-            <main class='form-signin'>
-                <h1>Informações Dispositivo</h1><hr>
-                <h3>ESP8266-ee50f0</h3><hr>
-                <dl>
-                    <dt>Tempo atividade</dt><dd>5 Mins 0 Secs</dd>
-                    <dt>Chip ID</dt><dd>15618288</dd>
-                    <dt>Flash Chip ID</dt><dd>1458415</dd>
-                    <dt>Flash Size</dt><dd>4194304 bytes</dd>
-                    <dt>Real Flash Size</dt><dd>4194304 bytes</dd>
-                    <dt>Core Version</dt><dd>3.1.2</dd>
-                    <dt>Boot Version</dt><dd>31</dd>
-                    <dt>CPU Frequency</dt><dd>80MHz</dd>
-                    <dt>Memory - Free Heap</dt><dd>5840 bytes available</dd>
-                    <dt>Memory - Sketch Size</dt><dd>Used / Total bytes<br/>591856 / 2095088<br/><progress value='591856' max='2095088'></progress></dd>
-                    <dt>Motivo último reset</dt><dd>Power On</dd>
-                </dl><hr>
-                
-                <h3>WiFi - Modo: WIFI_STA</h3><hr>
-                <dl>
-                    <dt>Conectado?</dt><dd>Sim</dd>
-                    <dt>Station SSID</dt><dd>BH2</dd>
-                    <dt>Station IP</dt><dd>192.168.0.165</dd>
-                    <dt>Station Gateway</dt><dd>192.168.0.1</dd>
-                    <dt>Station Subnet</dt><dd>255.255.255.0</dd>
-                    <dt>DNS Server</dt><dd>192.168.0.1</dd>
-                    <dt>Hostname</dt><dd>ESP-EE50F0</dd>
-                    <dt>Station MAC</dt><dd>84:F3:EB:EE:50:F0</dd>
-                    <dt>Autoconnect</dt><dd>enable</dd>
-                    <dt>Access Point SSID</dt><dd>Setup Portal - ee50f0</dd>
-                    <dt>Access Point IP</dt><dd>(IP unset)</dd>
-                    <dt>BSSID</dt><dd>E0:1C:FC:01:18:E3</dd>
-                    <dt>Access Point MAC</dt><dd>86:F3:EB:EE:50:F0</dd>
-                </dl><hr>
-                
-                <h3>Sobre</h3><hr>
-                <dl>
-                    <dt>Complilação</dt><dd>Blynk_Bomba_031.ino</dd>
-                    <dt>Por</dt><dd>Léviro</dd>
-                </dl><hr>
-            
-                <br><br/>
-                <form action='/' method='get'>
-                    <div id="botao">
-                        <button>Voltar</button>
-                    </div>
-                </form>
-                <br><br>
-            </main>
-        </body>
-</html>
+<head>
+    <meta name='format-detection' content='telephone=no'>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1, user-scalable=no'/>
+    <title>ESP-Info</title>
+    <style>body {margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Liberation Sans'; font-size: 16px; background-color: #f5f5f5; color: #212529;} .container {width: 100%; max-width: 360px; margin: auto; padding: 20px;} h1, h3 {color: blue; font-style: italic; text-align: center;} hr {margin-top: 10px; margin-bottom: 10px;} table {width: 100%; border-collapse: collapse;} th, td {text-align: left; padding: 8px;} tr:nth-child(odd) {background-color: #f5f5f5;} tr:nth-child(even) {background-color: #FFFFFF;} .button-container {text-align: center; margin-top: 20px;} button {cursor: pointer; border: 1px solid transparent; color: #fff; background-color: #007bff; border-color: #007bff; padding: 10px 20px; font-size: 18px; border-radius: 5px; width: auto;} @media (max-width: 480px) {body {font-size: 14px;} button {padding: 8px 15px; font-size: 16px;}}</style>
+ </head>
+<body>
+    <div class='container'>
+        <main class='form-signin'>
+            <h1>Informações do Dispositivo</h1>
+            <hr>
+<h3>ESP8266-00EE50F0</h3><hr><table><tr><th>Tempo atividade</th><td>0 Dias 00:00:49</td></tr><tr><th>Inicializações</th><td>5 Boots</td></tr><tr><th>Chip ID</th><td>15618288</td></tr><tr><th>Flash Chip ID</th><td>1458415</td></tr><tr><th>Flash Size</th><td>4194304 bytes</td></tr><tr><th>Real Flash Size</th><td>4194304 bytes</td></tr><tr><th>Core Version</th><td>3.1.2</td></tr><tr><th>Boot Version</th><td>31</td></tr><tr><th>CPU Frequency</th><td>80MHz</td></tr><tr><th>Memory - Free Heap</th><td>4496 bytes available</td></tr><tr><th>Memory - Sketch Size</th><td>Used / Total bytes<br/>557920 / 2093920<br/><progress value='557920' max='2093920'></progress></td></tr><tr><th>Motivo último reset</th><td>Power On</td></tr></table><hr><h3>WiFi - Modo: WIFI_STA</h3><hr><table><tr><th>Conectado?</th><td>Sim</td></tr><tr><th>Station SSID</th><td>BH2</td></tr><tr><th>Station IP</th><td>192.168.0.165</td></tr><tr><th>Station Gateway</th><td>192.168.0.1</td></tr><tr><th>Station Subnet</th><td>255.255.255.0</td></tr><tr><th>DNS Server</th><td>192.168.0.1</td></tr><tr><th>Hostname</th><td>ESP-EE50F0</td></tr><tr><th>Station MAC</th><td>84:F3:EB:EE:50:F0</td></tr><tr><th>Autoconnect</th><td>Habilitado</td></tr><tr><th>Access Point SSID</th><td>Setup Portal - ee50f0</td></tr><tr><th>Access Point IP</th><td>192.168.4.1</td></tr><tr><th>BSSID</th><td>E0:1C:FC:01:18:E3</td></tr><tr><th>Access Point MAC</th><td>86:F3:EB:EE:50:F0</td></tr></table><hr><h3>Parâmetros: /config.json</h3><hr><table><tr><th>Broker MQTT</th><td>14222a21d4914d69b3aadcab<br/>0de3ad88.s2.eu.hivemq.cloud</td></tr><tr><th>Porta Broker</th><td>8883</td></tr><tr><th>Usuário</th><td>ESP-01</td></tr><tr><th>Senha</th><td>Esp8266@01</td></tr><tr><th>Publish</th><td>Quarto/PUMPonoff</td></tr><tr><th>Sensor0</th><td>Quarto/Sensor0</td></tr><tr><th>Sensor2</th><td>Quarto/Sensor1</td></tr><tr><th>Host mDNS</th><td>http://bombquarto.local</td></tr><tr><th>Alexa</th><td>Bomba Quarto</td></tr><tr><th>Chave API</th><td>14222a21d4914d69b3aadcab<br/>0de3ad88.s2.eu.hivemq.cloud</td></tr><tr><th>Trigger 1</th><td>5979</td></tr><tr><th>Trigger 2</th><td>5980</td></tr></table></table><hr><h3>Sobre</h3><hr><table><tr><th>Software</th><td>Blynk_Bomba.ino</td></tr><tr><th>Compilado em</th><td>2024-02-18 12:20:24</td></tr><tr><th>Por</th><td>Léviro Péres Emydio</td></tr></table><hr><div class='button-container'><form action='/' method='get'><button type='submit'>Voltar</button></form></div></main></div></body></html>

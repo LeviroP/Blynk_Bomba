@@ -1,76 +1,102 @@
-<!doctype html>
-<html lang='pt-BR'>
-    <head>
-        <meta charset='utf-8'>
-        <meta name='viewport' content='width=device-width, initial-scale=1'>
-        <title>ESP Parâmetros</title>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESP-Parametros</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input[type="text"], 
+        input[type="submit"], 
+        button {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+        }
+        button {
+            background-color: #f44336;
+            color: white;
+            border: none;
+        }
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+        }
+        h2{text-align: center;
+        }
+    </style>
+</head>
+<body>
 
-        <style>
-            *,
-            ::after,
-            ::before {box-sizing:border-box;}
-            body {margin:0; font-family:'Segoe UI',Roboto,'Helvetica Neue',Arial,'Noto Sans','Liberation Sans'; font-size:1rem; font-weight:400; line-height:1.5; color:#212529; background-color:#f5f5f5;}
-            .form-control{display:block;width:100%;height:calc(1.5em + .75rem + 2px);border:1px solid #ced4da;color: blueviolet;}
-            button{cursor: pointer;border:1px solid transparent;color:#fff;background-color:#007bff;border-color:#007bff;padding:.5rem 1rem;font-size:1.25rem;line-height:1.5;border-radius:.3rem;width:100%}
-            .form-signin{width:100%;max-width:400px;padding:15px;margin:auto;}
-            h1{text-align: center;}
-        </style>
+<h2>Configurações</h2>
 
-        <script>
-            function c(l) {
-                document.getElementById('url').value='';
-                document.getElementById('port').value='';
-                document.getElementById('user').value='';
-                document.getElementById('pass').value='';
-                document.getElementById('pub').value='';
-                document.getElementById('sub').value='';
-                document.getElementById('host').value='';
-                document.getElementById('alexa01').value='';
-                document.getElementById('url').focus();
-            }
-        </script>
+<form action="/param" method="post">
+    <div class="form-group">
+        <label for='url'>Broker MQTT</label>
+        <input type='text' id='url' name='url' placeholder='Broker' value='{url}'>
+    </div>
+    <div class="form-group">
+        <label for='port'>Porta Broker</label>
+        <input type='text' id='port' name='port' placeholder='Porta' value='{port}'>
+    </div>
+    <div class="form-group">
+        <label for='user'>Usuário</label>
+        <input type='text' id='user' name='user' placeholder='Usuário' value='{user}'>
+    </div>
+    <div class="form-group">
+        <label for='pass'>Senha</label>
+        <input type='text' id='pass' name='pass' placeholder='Senha' value='{pass}'>
+    </div>
+    <div class="form-group">
+        <label for='pub'>Tópico Publish/Subscribe - Bomba</label>
+        <input type='text' id='pub' name='pub' placeholder='Publish' value='{pub}'>
+    </div>
+    <div class="form-group">
+        <label for='sub1'>Tópico Subscribe - Sensor0</label>
+        <input type='text' id='sub1' name='sub1' placeholder='Subscribe Sensor0' value='{sub1}'>
+    </div>
+    <div class="form-group">
+        <label for='sub2'>Tópico Subscribe - Sensor1</label>
+        <input type='text' id='sub2' name='sub2' placeholder='Subscribe Sensor1' value='{sub2}'>
+    </div>
+    <div class="form-group">
+        <label for='host'>Host mDNS</label>
+        <input type='text' id='host' name='host' placeholder='Host' value='{host}'>
+    </div>
+    <div class="form-group">
+        <label for='alexa01'>Dispositivo Alexa</label>
+        <input type='text' id='alexa01' name='alexa01' placeholder='Alexa' value='{alexa01}'>
+    </div>
+    <div class="form-group">
+        <label for='api'>Chave API - Trigger Alexa</label>
+        <input type='text' id='api' name='api' placeholder='Chave' value='{api}'>
+    </div>
+    <div class="form-group">
+        <label for='id1'>id1 Trigger - Nível Alto</label>
+        <input type='text' id='id1' name='id1' placeholder='Trigger1' value='{id1}'>
+    </div>
 
-    </head>
-    <body>
-
-        <main class='form-signin'>
-        
-            <h1>Configurar Parâmetros</h1>
-
-
-            <form action='/param' method='post'>
-                <div class='form-floating'>
-                        <label>Broker MQTT</label>
-                        <input type='text' class='form-control' id='url' name='url' placeholder='Broker' value='{url}'>
-                        <label>Porta Broker</label>
-                        <input type='text' class='form-control' id='port' name='port' placeholder='Porta' value='{port}'>
-                        <label>Usuário</label>
-                        <input type='text' class='form-control' id='user' name='user' placeholder='Usuário' value='{user}'>
-                        <label>Senha</label>
-                        <input type='text' class='form-control' id='pass' name='pass' placeholder='Senha' value='{pass}'>
-                        <label>Tópico Publish</label>
-                        <input type='text' class='form-control' id='pub' name='pub' placeholder='Publish' value='{pub}'>
-                        <label>Tópico Subscribe</label>
-                        <input type='text' class='form-control' id='sub' name='sub' placeholder='Subscribe' value='{sub}'>
-                        <label>Host mDNS</label>
-                        <input type='text' class='form-control' id='host' name='host' placeholder='Host' value='{host}'>
-                        <label>Dispositivo Alexa</label>
-                        <input type='text' class='form-control' id='alexa01' name='alexa01' placeholder='Alexa' value='{alexa01}'>
-                </div>
-
-
-                <br/>
-                <button type='submit'>Salvar</button><p></p>
-                <button type='reset'>Restaurar</button><p style='text-align: right'></p>
-                <button type='button' onclick='c(this)'>Limpar</button><p style='text-align: right'></p>
-
-            </form>
-
-
-            <form action='/' method='get'>
-                <button type='botton'>Voltar</button><p></p>
-            </form><br/>
-
-        </main>
-    </body>
+    <div class="form-group">
+        <label for='id2'>id2 Trigger - Nível Baixo</label>
+        <input type='text' id='id2' name='id2' placeholder='Trigger2' value='{id2}'>
+    </div>
+    <input type="submit" value="Salvar">
+    <button type="button" onclick="location.href='/'">Cancelar</button>
+</form>
+</body>
 </html>
